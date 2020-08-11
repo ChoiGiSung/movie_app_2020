@@ -1,18 +1,25 @@
 //movies를 render하기
 import React from "react";
 import PropTypes from "prop-types";
+import "./Movie.css";
 
-function Movie({ year, title, summary, poster }) {
+function Movie({id, year, title, summary, poster, genres}) {
     return (
-        <div class="movie">
+        <div className="movie">
             <img src={poster} alt={title} title={title}/>
-          <div class="movie_data">
-             <h3 class="movie_title">{title}</h3>
-              <h5 class="movie_year">{year}</h5>
-               <p class="movie_summary">{summary}</p>
+            <div className="movie_data">
+                <h3 className="movie_title">{title}</h3>
+                <h5 className="movie_year">{year}</h5>
+                <ul className="movie_genres">
+                    {genres.map((genres, index) => (
+                        <li key={index} className="genres_genre">{genres}</li>
+                    ))}
+                </ul>
+                <p className="movie_summary">{summary.slice(0,140)}...</p>
+                
          </div>
         </div>
-            );
+    );//<!--key 값을 넣어줘야한다-->
  }
 
 Movie.propTypes = {
@@ -20,7 +27,8 @@ Movie.propTypes = {
     year: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
-    poster: PropTypes.string.isRequired
+    poster: PropTypes.string.isRequired,
+    genres: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 

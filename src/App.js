@@ -1,72 +1,53 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-function App() {
-  return (
-      <div className="App">
-
-          {data.map(ss => (
-
-              < Face key={ss.id} name={ss.name} age={ss.age} sex={ss.sex} rating={ss.rating} />
-              ))}
-         
-    </div>
-  );
-}
+import axios from "axios";
+import Movie from "./Movies";
 
 
+class App extends React.Component {
 
+    state = {
+        isLoading: true,
+        movies:[]
+    };
 
-
-
-const data = [
-    {
-        id:"1",
-        name: "d",
-        age: "1",
-        sex: "2",
-        rating:5
-    },
-    {
-        id:"2",
-        name: "sd",
-        age: "d",
-        sex: "d",
-        rating: 4
-    },
-    {
-        id:"3",
-        name: "a",
-        age: "d",
-        sex: "b",
-        rating: 3
-    },
-    {
-        id:"4",
-        name: "q",
-        age: "r",
-        sex: "x",
-        rating: 2
+    getMovies = async () => {//async ,await 비동기에 관한 것들
+        const { data: { data: { movies } } } = await axios.get("https://yts.mx/api/v2/list_movies.json?sort_by=rating");
+        //처음 movies를 변수를 통해 받아서 json을 읽어보면 위와 같은 경로에 데이터가 들어가 있다
+        this.setState({ movies: movies, isLoading: false });
     }
-];
 
-function Face(gu) {
-   
-    return (
-       
-        <div>
-            <h1>{gu.name}d</h1>
-            <h2>{gu.age}</h2>
-            <h2>{gu.sex}</h2>
-            <h2>{gu.rating}/5</h2>
-        </div>);
+    componentDidMount() { //컴포넌트가 처음 마운트 될때 호출
+        this.getMovies(); //axios.get은 느리므로 async을 componentDidMount 앞에 쓰던가 함수로 빼서 나중에 호출 하던가
+    }
+
+    render() {
+        const { isLoading, movies } = this.state;
+        return <section class="container">
+            {isLoading ? (
+                <div class="loader">
+                    <span class="loader_text">Loading...</span>
+                </div>
+            )
+                :(
+                <div class="movies">
+                    {movies.map(movie => (
+                        <Movie
+                            key={movie.id}
+                            id={movie.id}
+                            year={movie.year}
+                            title={movie.title}
+                            summary={movie.summary}
+                            poster={movie.medium_cover_image}
+                        />
+                    ))}
+                </div>
+                )}
+        </section>;
+    }
 }
 
-Face.propTypes = { //값 이 잘 들어갔는지 확인 잘안들어가면 그때 오류문구 발생
-    name: PropTypes.string.isRequired,
-    age: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired
-};
+
 
 
         export default App;
